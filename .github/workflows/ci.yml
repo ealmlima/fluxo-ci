@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       - main
+      - 'feature/**'
 
 jobs:
   validate:
@@ -13,6 +14,11 @@ jobs:
     steps:
       - name: Validar fluxo de branches
         run: |
+          if [[ "${{ github.base_ref }}" == feature/* ]]; then
+            echo "ERRO: não é permitido abrir PR para uma branch feature/*."
+            exit 1
+          fi
+
           if [ "${{ github.base_ref }}" = "develop" ]; then
             if [[ "${{ github.head_ref }}" != feature/* ]]; then
               echo "ERRO: apenas branches feature/* podem abrir PR para develop."
